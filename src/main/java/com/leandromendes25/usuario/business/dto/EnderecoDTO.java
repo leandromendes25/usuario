@@ -1,6 +1,5 @@
-package com.leandromendes25.usuario.infrastructure.entity;
+package com.leandromendes25.usuario.business.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,18 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name = "endreco")
-public class Endereco {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class EnderecoDTO {
     private String rua;
     private Long numero;
     private String complemento;
     private String cidade;
-    @Column(length = 2)
     private String estado;
     private String cep;
-
 }
