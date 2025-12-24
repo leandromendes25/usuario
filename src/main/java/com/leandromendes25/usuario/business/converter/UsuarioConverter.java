@@ -6,9 +6,10 @@ import com.leandromendes25.usuario.business.dto.UsuarioDTO;
 import com.leandromendes25.usuario.infrastructure.entity.Endereco;
 import com.leandromendes25.usuario.infrastructure.entity.Telefone;
 import com.leandromendes25.usuario.infrastructure.entity.Usuario;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public class UsuarioConverter {
     public Usuario paraUsuario(UsuarioDTO usuarioDTO){
         return Usuario.builder().nome(usuarioDTO.getNome())
