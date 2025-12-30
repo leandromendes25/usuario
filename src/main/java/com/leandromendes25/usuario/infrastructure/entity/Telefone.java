@@ -20,4 +20,5 @@ public class Telefone {
     private String numero;
     @Column(length = 3)
     private String ddd;
+    private Long usuario_id;
 }
