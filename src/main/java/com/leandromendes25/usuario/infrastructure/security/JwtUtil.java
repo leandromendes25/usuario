@@ -28,7 +28,7 @@ public class JwtUtil {
     }
 
     // Extrai as claims do token JWT (informações adicionais do token)
-    public Claims extractClaims(String token) {
+    public Claims extractEmailToken(String token) {
         return Jwts.parser()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8))) // Define a chave secreta para validar a assinatura do token
                 .build()
@@ -39,13 +39,13 @@ public class JwtUtil {
     // Extrai o nome de usuário do token JWT
     public String extractUsername(String token) {
         // Obtém o assunto (nome de usuário) das claims do token
-        return extractClaims(token).getSubject();
+        return extractEmailToken(token).getSubject();
     }
 
     // Verifica se o token JWT está expirado
     public boolean isTokenExpired(String token) {
         // Compara a data de expiração do token com a data atual
-        return extractClaims(token).getExpiration().before(new Date());
+        return extractEmailToken(token).getExpiration().before(new Date());
     }
 
     // Valida o token JWT verificando o nome de usuário e se o token não está expirado
