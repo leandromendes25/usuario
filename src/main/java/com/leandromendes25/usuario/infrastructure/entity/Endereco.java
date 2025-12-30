@@ -23,5 +23,5 @@ public class Endereco {
     @Column(length = 2)
     private String estado;
     private String cep;
-
+    private Long usuario_id;
 }
