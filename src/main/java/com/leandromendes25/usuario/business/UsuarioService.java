@@ -9,11 +9,18 @@ import com.leandromendes25.usuario.infrastructure.entity.Telefone;
 import com.leandromendes25.usuario.infrastructure.entity.Usuario;
 import com.leandromendes25.usuario.infrastructure.exceptions.ConflictException;
 import com.leandromendes25.usuario.infrastructure.exceptions.ResourceNotFoundException;
+import com.leandromendes25.usuario.infrastructure.exceptions.UnathorizedException;
 import com.leandromendes25.usuario.infrastructure.repository.EnderecoRepository;
 import com.leandromendes25.usuario.infrastructure.repository.TelefoneRepository;
 import com.leandromendes25.usuario.infrastructure.repository.UsuarioRepository;
 import com.leandromendes25.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +34,7 @@ public class UsuarioService {
     private final JwtUtil jwtUtil;
     private final EnderecoRepository enderecoRepository;
     private final TelefoneRepository telefoneRepository;
+    private final AuthenticationManager authenticationManager;
 
     public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO){
         verificaEmailExistente(usuarioDTO.getEmail());
@@ -34,18 +42,17 @@ public class UsuarioService {
         Usuario usuario = usuarioConverter.paraUsuario(usuarioDTO);
         return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
     }
-
-    public void emailExiste(String email){
-        boolean existe = verificaEmailExistente(email);
+    public String autenticarUsuario(UsuarioDTO usuarioDTO) throws UnathorizedException {
         try{
-            if(existe){
-                throw new ConflictException("Email já cadastrado: " + email);
-            }
-        }catch (ConflictException e){
-            throw new ConflictException("Email já cadastrado:" + e.getCause());
-        }
 
-    }
+        Authentication authentication = authenticationManager.
+                authenticate(
+                        new UsernamePasswordAuthenticationToken(usuarioDTO.getEmail(), usuarioDTO.getSenha()));
+        return "Bearer " + jwtUtil.generateToken(authentication.getName());
+        }catch (BadCredentialsException | UsernameNotFoundException | AuthorizationDeniedException ex){
+            throw new UnathorizedException("Usuario ou senha inválidos" + ex.getCause());
+        }
+        }
 
     public boolean verificaEmailExistente(String email){
         return usuarioRepository.existsByEmail(email);
