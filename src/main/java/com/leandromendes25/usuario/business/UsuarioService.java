@@ -7,7 +7,6 @@ import com.leandromendes25.usuario.business.dto.UsuarioDTO;
 import com.leandromendes25.usuario.infrastructure.entity.Endereco;
 import com.leandromendes25.usuario.infrastructure.entity.Telefone;
 import com.leandromendes25.usuario.infrastructure.entity.Usuario;
-import com.leandromendes25.usuario.infrastructure.exceptions.ConflictException;
 import com.leandromendes25.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.leandromendes25.usuario.infrastructure.exceptions.UnathorizedException;
 import com.leandromendes25.usuario.infrastructure.repository.EnderecoRepository;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +47,7 @@ public class UsuarioService {
                 authenticate(
                         new UsernamePasswordAuthenticationToken(usuarioDTO.getEmail(), usuarioDTO.getSenha()));
         return "Bearer " + jwtUtil.generateToken(authentication.getName());
-        }catch (BadCredentialsException | UsernameNotFoundException | AuthorizationDeniedException ex){
+        }catch (BadCredentialsException | UsernameNotFoundException ex){
             throw new UnathorizedException("Usuario ou senha inválidos" + ex.getCause());
         }
         }
