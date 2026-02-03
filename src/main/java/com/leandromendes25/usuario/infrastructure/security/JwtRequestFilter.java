@@ -1,6 +1,6 @@
 package com.leandromendes25.usuario.infrastructure.security;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.leandromendes25.usuario.infrastructure.exceptions.dto.ErrorResponseDTO;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -13,10 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 // Define a classe JwtRequestFilter, que estende OncePerRequestFilter
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -71,7 +70,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
        }
     }
     //necessário converter para string para o write do response aceitar
-    private String buildError(int status, String mensagem, String path){
+    private String buildError(int status, String mensagem, String path) throws JsonProcessingException {
         ErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(mensagem)
                 .status(status)
